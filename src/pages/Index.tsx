@@ -5,6 +5,7 @@ import PlanetSection from "@/components/PlanetSection";
 import Footer from "@/components/Footer";
 import { StarsBackground } from "@/components/StarsBackground";
 import { planets } from "@/data/planets";
+import { preloadModels } from "@/components/PlanetGLB";
 
 const Index = () => {
   useEffect(() => {
@@ -14,6 +15,9 @@ const Index = () => {
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Explore nosso sistema solar através de modelos 3D imersivos e animações ativadas por scroll. Conteúdo educacional sobre planetas, luas e o Sol para entusiastas da ciência.');
     }
+    
+    // Preload all GLB models for better performance
+    preloadModels();
   }, []);
 
   return (

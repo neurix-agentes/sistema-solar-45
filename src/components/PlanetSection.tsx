@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Planet3D from "./Planet3D";
-import SunSketchfab from "./SunSketchfab";
+import PlanetGLB from "./PlanetGLB";
 import { Planet } from "@/data/planets";
 
 interface PlanetSectionProps {
@@ -77,17 +76,13 @@ const PlanetSection = ({ planet, index }: PlanetSectionProps) => {
               <div className="absolute inset-0 rounded-full opacity-30 animate-pulse"
                    style={{ boxShadow: `0 0 100px ${planet.glowColor}` }} />
               
-              {planet.id === "sun" ? (
-                <SunSketchfab isVisible={showPlanet} />
-              ) : (
-                <Planet3D
-                  color={planet.color}
-                  glowColor={planet.glowColor}
-                  size={size}
-                  rotationSpeed={rotationSpeed}
-                  isVisible={showPlanet}
-                />
-              )}
+              <PlanetGLB
+                modelPath={`/models/${planet.id}.glb`}
+                size={size}
+                rotationSpeed={rotationSpeed}
+                isVisible={showPlanet}
+                glowColor={planet.glowColor}
+              />
             </motion.div>
 
             {/* Planet Information */}
