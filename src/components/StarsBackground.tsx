@@ -8,6 +8,7 @@ import {
   type Transition,
   useMotionValue,
   useSpring,
+  useReducedMotion,
 } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -87,14 +88,22 @@ export function StarsBackground({
   starColor = "#fff",
   ...props
 }: StarsBackgroundProps) {
+  const prefersReduced = useReducedMotion();
   const offsetX = useMotionValue(1);
   const offsetY = useMotionValue(1);
 
   const springX = useSpring(offsetX, transition);
   const springY = useSpring(offsetY, transition);
 
+  // Responsive density for mobile performance
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const mobileSpeed = isMobile ? speed * 1.5 : speed;
+  const mobileCounts = isMobile ? [500, 200, 100] : [1000, 400, 200];
+
   const handleMouseMove = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (prefersReduced) return;
+      
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       const newOffsetX = -(e.clientX - centerX) * factor;
@@ -102,7 +111,7 @@ export function StarsBackground({
       offsetX.set(newOffsetX);
       offsetY.set(newOffsetY);
     },
-    [offsetX, offsetY, factor],
+    [offsetX, offsetY, factor, prefersReduced],
   );
 
   return (
@@ -115,35 +124,44 @@ export function StarsBackground({
       onMouseMove={handleMouseMove}
       {...props}
     >
-      <motion.div style={{ x: springX, y: springY }} className="pointer-events-none">
+      <motion.div 
+        style={{ 
+          x: prefersReduced ? 0 : springX, 
+          y: prefersReduced ? 0 : springY 
+        }} 
+        className="pointer-events-none will-change-transform z-0 select-none"
+        aria-hidden="true"
+      >
         <StarLayer
-          count={1000}
+          count={mobileCounts[0]}
           size={1}
-          transition={{ repeat: Infinity, duration: speed, ease: "linear" }}
+          transition={prefersReduced ? { duration: 0 } : { repeat: Infinity, duration: mobileSpeed, ease: "linear" }}
           starColor={starColor}
         />
         <StarLayer
-          count={400}
+          count={mobileCounts[1]}
           size={2}
-          transition={{
+          transition={prefersReduced ? { duration: 0 } : {
             repeat: Infinity,
-            duration: speed * 2,
+            duration: mobileSpeed * 2,
             ease: "linear",
           }}
           starColor={starColor}
         />
         <StarLayer
-          count={200}
+          count={mobileCounts[2]}
           size={3}
-          transition={{
+          transition={prefersReduced ? { duration: 0 } : {
             repeat: Infinity,
-            duration: speed * 3,
+            duration: mobileSpeed * 3,
             ease: "linear",
           }}
           starColor={starColor}
         />
       </motion.div>
-      {children}
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 }
