@@ -1,0 +1,13 @@
+# Esta pasta contém os modelos 3D dos planetas em formato .glb
+
+Adicione os seguintes arquivos:
+- sun.glb
+- mercury.glb  
+- venus.glb
+- earth.glb
+- moon.glb
+- mars.glb
+- jupiter.glb
+- saturn.glb
+- uranus.glb
+- neptune.glb
